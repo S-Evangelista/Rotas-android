@@ -2,10 +2,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import metadata from "./../storage.medata.json";
 import { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
+import { useIsFocused } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
     const [name, setName] = useState("");
-    useEffect(() => { getUserName() }, [])
+    const focus = useIsFocused();
+    useEffect(() => { getUserName() }, [focus])
 
     const getUserName = async () => {
         const userName = await AsyncStorage.getItem(metadata.USER.USERNAME);
