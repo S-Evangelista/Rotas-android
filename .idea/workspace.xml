@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c985c390-87bb-42cb-9c50-c95688a81d30" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/rotas-android/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/rotas-android/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rotas-android/src/Lista/Lista.js" beforeDir="false" afterPath="$PROJECT_DIR$/rotas-android/src/Lista/Lista.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

@@ -1,71 +1,87 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import React, { Component } from 'react';
+import { View, Text, Button, FlatList, TextInput, TouchableOpacity } from 'react-native';
 
-const ListaDeCompras = () => {
-  const [item, setItem] = useState('');
-  const [listas, setListas] = useState([]);
-  const [listaAtual, setListaAtual] = useState([]);
-  const [nomeNovaLista, setNomeNovaLista] = useState('');
+class App extends Component {
+  constructor(props) {
+    super(props);
 
-  const adicionarItem = () => {
-    if (item) {
-      setListaAtual([...listaAtual, item]);
-      setItem('');
-    }
-  };
+    this.state = {
+      lists: [], // Armazena as listas criadas
+      currentList: null, // Lista selecionada
+      newItemName: '', // Nome do novo item a ser adicionado
+    };
+  }
 
-  const removerItem = (index) => {
-    const novaLista = [...listaAtual];
-    novaLista.splice(index, 1);
-    setListaAtual(novaLista);
-  };
+  // Função para criar uma nova lista
+  createList = () => {
+    const newList = {
+      id: Date.now().toString(),
+      name: 'Nova Lista',
+      items: [],
+    };
+    this.setState({
+      lists: [...this.state.lists, newList],
+      currentList: newList,
+    });
+  }
 
-  const limparLista = () => {
-    setListaAtual([]);
-  };
+  // Função para adicionar um novo item à lista selecionada
+  addItem = () => {
+    const newItem = {
+      id: Date.now().toString(),
+      name: this.state.newItemName,
+    };
+    this.setState((prevState) => ({
+      currentList: {
+        ...prevState.currentList,
+        items: [...prevState.currentList.items, newItem],
+      },
+      newItemName: '',
+    }));
+  }
 
-  const criarNovaLista = () => {
-    if (nomeNovaLista) {
-      setListas([...listas, { nome: nomeNovaLista, itens: [] }]);
-      setNomeNovaLista('');
-      setListaAtual([]);
-    }
-  };
+  // Função para selecionar uma lista e exibir seus itens
+  selectList = (list) => {
+    this.setState({ currentList: list });
+  }
 
-  const listasMemo = useMemo(() => listas, [listas]);
-  const listaAtualMemo = useMemo(() => listaAtual, [listaAtual]);
-
-  return (
-    <View>
-      <Text>Lista de Compras</Text>
-      <TextInput
-        placeholder="Digite um item"
-        value={item}
-        onChangeText={text => setItem(text)}
-      />
-      <Button title="Adicionar" onPress={adicionarItem} />
-      <Button title="Limpar Lista Atual" onPress={limparLista} />
-      <TextInput
-        placeholder="Nome da nova lista"
-        value={nomeNovaLista}
-        onChangeText={text => setNomeNovaLista(text)}
-      />
-      <Button title="Criar Nova Lista" onPress={criarNovaLista} />
-      <FlatList
-        data={listaAtualMemo}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>{item}</ListItem.Title>
-            </ListItem.Content>
-            <Button title="Excluir" onPress={() => removerItem(index)} />
-          </ListItem>
+  render() {
+    return (
+      <View>
+        <Button title="Criar Lista" onPress={this.createList} />
+        <View>
+          <Text>Listas Criadas:</Text>
+          <FlatList
+            data={this.state.lists}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => this.selectList(item)}>
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+        {this.state.currentList && (
+          <View>
+            <Text>Itens da Lista: {this.state.currentList.name}</Text>
+            <FlatList
+              data={this.state.currentList.items}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Text>{item.name}</Text>
+              )}
+            />
+            <TextInput
+              placeholder="Nome do Item"
+              value={this.state.newItemName}
+              onChangeText={(text) => this.setState({ newItemName: text })}
+            />
+            <Button title="Adicionar Item" onPress={this.addItem} />
+          </View>
         )}
-      />
-    </View>
-  );
-};
+      </View>
+    );
+  }
+}
 
-export default ListaDeCompras;
+export default App;
